@@ -23,14 +23,14 @@ def parse_page(page):
 		position = entry.xpath("h2/a/@title")
 		position_url = entry.xpath("h2/a/@href")
 		
-		#niektóre og³osznia nie maj¹ w ogóle w³asnej podstrony
-		#wtedy oczywiœcie nie ma do niej linku
+		#niektÃ³re ogÂ³osznia nie majÂ¹ w ogÃ³le wÂ³asnej podstrony
+		#wtedy oczywiÂœcie nie ma do niej linku
 		if( len(position) == 0 ):
 			position = entry.xpath("/h2/span/text()")
 			position_url = [""]
 			
-			#w tym przypadku nie jest to w ogóle og³oszenie
-			#a element typu "znajdŸ podobne oferty"
+			#w tym przypadku nie jest to w ogÃ³le ogÂ³oszenie
+			#a element typu "znajdÂŸ podobne oferty"
 			if(len(position) == 0):
 				continue
 		
@@ -62,7 +62,7 @@ print(results)
 #	writer.writerows(results)
 
 
-with open("results.csv", "w") as f:
+with open("Data/results.csv", "w") as f:
 	writer = unicodecsv.writer(f, encoding='utf-8',delimiter='\t',quotechar="\"", quoting=unicodecsv.QUOTE_ALL)
 	writer.writerows(results)
 

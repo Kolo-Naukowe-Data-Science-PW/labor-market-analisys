@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import urllib2
 import lxml.html
-import sys
-import unicodecsv
+#import sys #unused
+#import unicodecsv #unused
 
 
 #This script downloads work offers from pracuj.pl portal
