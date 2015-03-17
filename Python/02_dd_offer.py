@@ -1,17 +1,29 @@
 # -*- coding: utf-8 -*-
 import urllib2
 import lxml.html
-#import sys #unused
-#import unicodecsv #unused
-
+import sys
+import unicodecsv
+from peewee import *
 
 #This script downloads work offers from pracuj.pl portal
-#WARNING: number of work offers pages is hardcoded in num_pages variable
 #TODO: check for timeout errors
 #TODO: add some sleep time in order not to flood servers
 
 
-def extract_description(page):
+
+db = SqliteDatabase("pracuj.db")
+
+class Offer(Model):
+	position = CharField()
+	url = CharField()
+	company_name = CharField()
+	company_url = CharField()
+	content = TextField()
+	class Meta:
+		database = db
+
+#extract pure text or html?
+def extract_offer_content(page):
 	response = urllib2.urlopen(page)
 	html = response.read()
 
@@ -42,10 +54,20 @@ def extract_description(page):
 	else:
 		return ""
 
-h = extract_description("http://www.pracuj.pl/praca/\
-inzynier-procesu-przetworstwo-tworzyw-sztucznych-lodzkie,oferta,3811165")
-print(h.encode('ascii', 'replace'))
+if not Offer.table_exists():
+	Offer.create_table()
 
+
+with open("results.csv", "r") as f:
+	reader = unicodecsv.reader(f, encoding='utf-8',delimiter='\t',quotechar="\"",
+								quoting=unicodecsv.QUOTE_ALL,lineterminator='\n')
+	for row in reader:
+		print(row)
+		content = extract_offer_content(row[1])
+		offer = Offer(position=row[0], url=row[1], company_name=row[2], company_url=row[3], content=content)
+		offer.save()
+		
+db.close()
 
 
 
