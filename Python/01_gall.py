@@ -3,6 +3,7 @@ import urllib2
 import lxml.html
 import sys
 import unicodecsv
+import time
 
 
 #This script downloads work offers from pracuj.pl portal
@@ -20,6 +21,7 @@ def parse_page(page, attempts=3, timeout=5):
 			break #success
 		except urllib2.URLError as e:
 			print("Attempt {0}. Error occured. {1}".format(a,e))
+			time.sleep(5) #also sleep for 5 seconds
 			if( a == attempts - 1 ):
 				print("Download Fail")
 				raise e
