@@ -17,7 +17,7 @@ def parse_page(page, attempts=3, timeout=5):
 	
 	for a in range(attempts):
 		try:
-			response = urllib2.urlopen(page,timeout=timeout)
+			response = urllib2.urlopen(page)
 			break #success
 		except urllib2.URLError as e:
 			print("Attempt {0}. Error occured. {1}".format(a,e))

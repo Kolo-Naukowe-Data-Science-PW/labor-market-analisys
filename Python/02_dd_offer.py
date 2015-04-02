@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import urllib2
+import requests
 import lxml.html
 import sys
 import unicodecsv
@@ -48,16 +48,16 @@ class OfferTag(Model):
 def extract(page, attempts=3):
 	for a in range(attempts):
 		try:
-			response = urllib2.urlopen(page)
+			response = requests.get(page,timeout=5)
 			break #success
-		except urllib2.URLError as e:
-			print("Attempt {0}. Error occured. {1}".format(a,e))
+		except requests.exceptions.RequestException as e:
+			print("Attempt {0}. Error occured. {1}".format(a,str(e)))
 			time.sleep(5) #also sleep for 5 seconds
 			if( a == attempts - 1 ):
 				print("Download Fail")
 				raise e
 	
-	html = response.read()
+	html = response.text
 
 	t = lxml.html.fromstring(html)
 	t.make_links_absolute(page)
@@ -178,7 +178,7 @@ with open("results.csv", "r") as f:
 	reader = unicodecsv.reader(f, encoding='utf-8',delimiter='\t',quotechar="\"",
 								quoting=unicodecsv.QUOTE_ALL,lineterminator='\n')
 	for i,row in enumerate(reader):
-		if i + 1 >= start_row:
+		if i  >= start_row:
 			print(i)
 			print(row)
 			
@@ -186,7 +186,7 @@ with open("results.csv", "r") as f:
 			# don't know if  catching here error is OK
 			try:
 				entry_info, entry_tags = extract(row[1])
-			except urllib2.URLError as e:
+			except requests.exceptions.RequestException as e:
 				print("Download error")
 				print("Writing to database and exit")
 				print("You may start downloading from row x by running dd_offer x")
@@ -197,7 +197,7 @@ with open("results.csv", "r") as f:
 				continue
 			
 			#feed offer info with information from CSV file
-			entry_info.update(position=row[0], url=row[1], company_name=row[2], company_url=row[3])
+			entry_info.update(id=i+1, position=row[0], url=row[1], company_name=row[2], company_url=row[3])
 			
 			#update tag_dict and tags list
 			for t in entry_tags:
