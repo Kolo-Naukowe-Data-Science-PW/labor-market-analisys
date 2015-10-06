@@ -1,0 +1,16 @@
+Data/
+.Rproj.user
+.Rhistory
+*.RData
+*.Rproj
+*.log
+*.out
+*.synctex.gz
+*.aux
+.directory
+*.toc
+*.tex.bak
+*.spyderworkspace
+*.spyderproject
+*concordance.tex
+*.RDataTmp
